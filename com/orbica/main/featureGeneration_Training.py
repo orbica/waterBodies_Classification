@@ -1,9 +1,10 @@
 import math
 
-
+# Provide input & output Path
 InputFile="/media/sagar/DATA/Orbica/Work/Dataset/OL017 ECan Waterbodies Classification/Merge_vectorLayers_Training/Nodes_Merged_vectorLayers_Training.csv"
 OutputFile="/media/sagar/DATA/Orbica/Work/Dataset/OL017 ECan Waterbodies Classification/Merge_vectorLayers_Training/Model/NodesMerged_FeatureFile.csv"
 
+#write data into file
 writer=open(OutputFile,'w')
 
 def featureGenerationWaterBodies(Path):
@@ -77,6 +78,5 @@ def featureGenerationWaterBodies(Path):
             area) + "," + str(perimeter) + ","+str(areaLenRation) + "," + str(count) + "," + str(avgWidth) +","+ActualLabel+"\n")
         print("Global Count For"+str(gloablCount))
 
-
-
+# main method
 featureGenerationWaterBodies(InputFile)
