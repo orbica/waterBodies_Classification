@@ -5,6 +5,7 @@ import pandas
 from sklearn.preprocessing import Normalizer
 
 from keras.models import Sequential
+
 from keras.layers import Dense
 from sklearn.preprocessing import StandardScaler
 from keras.utils import np_utils
@@ -18,17 +19,17 @@ from sklearn.model_selection import train_test_split
 import matplotlib.cm as cm
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score, cohen_kappa_score
 
-inputFilePath = "/media/sagar/DATA/Orbica/Work/Dataset/Analysis/ML_Data/1Sep_NewFeature/Featurefile_6Labels_1Sep (copy).csv"
+inputFilePath = "/media/sagar/DATA/Orbica/Work/Dataset/OL017 ECan Waterbodies Classification/Merge_vectorLayers_Training/Model/NodesMerged_FeatureFile.csv"
 
-modelWeights="/media/sagar/DATA/Orbica/Work/Dataset/Analysis/Model_Data/1Sep_6Classlabels/BestModel/Best_Model_2/model_7Sep_Theano_20000.h5"
+modelWeights="/media/sagar/DATA/Orbica/Work/Dataset/OL017 ECan Waterbodies Classification/Merge_vectorLayers_Training/Model/model_Theano_5000_8Sep.h5"
 
-outputPath="/media/sagar/DATA/Orbica/Work/Dataset/Analysis/Model_Data/1Sep_6Classlabels/BestModel/Best_Model_2/Actual_Predicted_7Sep_Theano_20000.csv"
+outputPath="/media/sagar/DATA/Orbica/Work/Dataset/OL017 ECan Waterbodies Classification/Merge_vectorLayers_Training/Model/NodesMerged_FeatureFilePreditions.csv"
 
 # fix random seed for reproducibility
 
 
 # load dataset from CSV into pandas object
-dataframe = pandas.read_csv(inputFilePath, sep=",", header=0)
+dataframe = pandas.read_csv(inputFilePath, sep=",", header=None)
 dataframe = dataframe._values
 
 
@@ -44,7 +45,7 @@ rescaledX = scaler.transform(X_Feature_Vector)
 Y_Output_Encode_train=np_utils.to_categorical(Y_Output_Vector)
 numClasses=Y_Output_Encode_train.shape[1]
 
-# create model
+#create model
 model = Sequential()
 model.add(Dense(500,input_dim=8, kernel_initializer='uniform', activation='relu'))
 model.add(Dense(100, kernel_initializer='uniform', activation='relu'))
@@ -52,10 +53,11 @@ model.add(Dense(50, kernel_initializer='uniform', activation='relu'))
 model.add(Dense(20, kernel_initializer='uniform', activation='relu'))
 model.add(Dense(numClasses, activation='softmax'))
 
+
 print(model.summary())
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-model.fit(rescaledX, Y_Output_Encode_train, nb_epoch=20000, batch_size=100)
+model.fit(rescaledX, Y_Output_Encode_train, nb_epoch=5000, batch_size=100)
 
 model.save_weights(modelWeights)
 
@@ -90,36 +92,41 @@ for x_data,original,predicted in zip(X_trainOriginal,Y_trainOriginal,y_classes):
 
 # Convert Numbers to Unique Class labels Actual
     if(actual==0):
-        actual ="River"
+        actual ="RIVER"
     elif(actual==1):
-        actual="Canal"
+        actual="CANAL"
     elif (actual == 2):
-        actual = "Lake"
+        actual = "LAKE"
     elif (actual == 3):
-        actual = "Pond"
+        actual = "POND"
     elif (actual == 4):
-        actual = "Lagoon"
+        actual = "LAGOON"
     elif (actual == 5):
-        actual = "Reservoir"
+        actual = "RESERVOIR"
 
 
 # Convert Numbers to Unique Class labels Predicted
     if(predicted==0):
-        predicted ="River"
+        predicted ="RIVER"
     elif(predicted==1):
-        predicted="Canal"
+        predicted="CANAL"
     elif (predicted == 2):
-        predicted = "Lake"
+        predicted = "LAKE"
     elif (predicted == 3):
-        predicted = "Pond"
+        predicted = "POND"
     elif (predicted == 4):
-        predicted = "Lagoon"
+        predicted = "LAGOON"
     elif (predicted == 5):
-        predicted = "Reservoir"
+        predicted = "RESERVOIR"
 
     f.write(str((actual))+","+str((predicted))+"\n")
 
 print(model.weights)
+
+
+print(f1_score(Y_trainOriginal, y_classes, average="macro"))
+print(precision_score(Y_trainOriginal, y_classes, average="macro"))
+print(recall_score(Y_trainOriginal, y_classes, average="macro"))
 
 
 plt.matshow(matrix)
